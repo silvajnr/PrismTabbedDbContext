@@ -30,6 +30,10 @@ namespace BlankApp1
         {
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
+            containerRegistry.RegisterForNavigation<PrismTabbedPage1, PrismTabbedPage1ViewModel>();
+            containerRegistry.RegisterForNavigation<PrismContentPage1, PrismContentPage1ViewModel>();
+            containerRegistry.RegisterForNavigation<PrismContentPage2, PrismContentPage2ViewModel>();
+            containerRegistry.RegisterForNavigation<PrismContentPage3, PrismContentPage3ViewModel>();
         }
     }
 }

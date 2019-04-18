@@ -1,10 +1,80 @@
-﻿using System;
+﻿using BlankApp1.Services;
+using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BlankApp1.DataStores
 {
-    class DataStore
+    public abstract class DataStore<T> : IDataStore<T> where T : class
     {
+        #region Properties
+        /// <summary>
+        /// Database context for ClienteData
+        /// </summary>
+        private readonly IGenerateDbContext _dbContext;
+        private readonly string _instance = Guid.NewGuid().ToString();
+        #endregion
+
+        #region Contructor
+        public DataStore(IGenerateDbContext dbContext)
+        {
+            _dbContext = dbContext;
+            Debug.WriteLine($"DataStore check _dbContext:{_dbContext.Instace} instance {_instance}");
+        }
+        #endregion
+
+        #region Class Implementation
+        public virtual Task<IEnumerable<T>> GetItemsAsync()
+        {
+            Debug.WriteLine($"DataStore GetItemsAsync() instance {_instance}");
+            return Task.Run(() =>
+            {
+                IEnumerable<T> items = null;
+                using (IApplicationDbContext myDbContext = _dbContext.GenerateNewContext())
+                {
+                    try
+                    {
+                        items = myDbContext.Set<T>().ToList<T>();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"GetItemsAsync Error ex:{ex.Message}");
+
+                    }
+                }
+
+                return items;
+            });
+        }
+
+        public virtual Task<IEnumerable<T>> GetItemsByPredicateAsync(Func<T, bool> predicate)
+        {
+            Debug.WriteLine($"DataStore GetItemsByPredicateAsync(Func<T, bool> predicate) instance {_instance}");
+            return Task.Run(() =>
+            {
+                IEnumerable<T> items = null;
+                using (IApplicationDbContext myDbContext = _dbContext.GenerateNewContext())
+                {
+                    try
+                    {
+                        items = myDbContext.Set<T>().Where(predicate);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"GetItemsByPredicateAsync predicate:{predicate}  Error ex:{ex.Source} {ex.Message} {ex.InnerException} {_instance}");
+                        return null;
+                    }
+                }
+
+                return items;
+            });
+        }
+
+
+
+        #endregion
     }
 }

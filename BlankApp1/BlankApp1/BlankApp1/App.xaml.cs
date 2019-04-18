@@ -1,7 +1,9 @@
-﻿using Prism;
-using Prism.Ioc;
+﻿using BlankApp1.DataStores;
+using BlankApp1.Services;
 using BlankApp1.ViewModels;
 using BlankApp1.Views;
+using Prism;
+using Prism.Ioc;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -28,12 +30,32 @@ namespace BlankApp1
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            #region Register Navigations
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
             containerRegistry.RegisterForNavigation<PrismTabbedPage1, PrismTabbedPage1ViewModel>();
             containerRegistry.RegisterForNavigation<PrismContentPage1, PrismContentPage1ViewModel>();
             containerRegistry.RegisterForNavigation<PrismContentPage2, PrismContentPage2ViewModel>();
             containerRegistry.RegisterForNavigation<PrismContentPage3, PrismContentPage3ViewModel>();
+            #endregion
+
+            #region Register DataStores
+            var _dbPath = this.Container.Resolve<ISQLite>();
+            //containerRegistry.RegisterInstance<IApplicationDbContext>(new ApplicationDbContext(_dbPath));
+            //containerRegistry.RegisterSingleton<IApplicationDbContext, ApplicationDbContext>();
+            //containerRegistry.Register<IApplicationDbContext, ApplicationDbContext>();
+            containerRegistry.Register<IGenerateDbContext, GenerateDbContext>();
+            //containerRegistry.RegisterInstance<IGenerateDbContext>(new GenerateDbContext(_dbPath));
+            //containerRegistry.RegisterSingleton<IGenerateDbContext, GenerateDbContext>();
+            containerRegistry.Register<IMessageDataStore, MessageDataStore>();
+            containerRegistry.Register<IChatDataStore, ChatDataStore>();
+            #endregion
+
+            #region Register Services
+            containerRegistry.Register<IPrismContentPage1Services, PrismContentPage1Services>();
+            containerRegistry.Register<IPrismContentPage2Services, PrismContentPage2Services>();
+            containerRegistry.Register<IPrismContentPage3Services, PrismContentPage3Services>();
+            #endregion
         }
     }
 }

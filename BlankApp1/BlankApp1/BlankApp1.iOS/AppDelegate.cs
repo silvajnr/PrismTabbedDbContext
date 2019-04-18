@@ -1,4 +1,5 @@
-﻿using Foundation;
+﻿using BlankApp1.Services;
+using Foundation;
 using Prism;
 using Prism.Ioc;
 using UIKit;
@@ -33,6 +34,7 @@ namespace BlankApp1.iOS
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             // Register any platform specific implementations
+            containerRegistry.Register<ISQLite, SQliteService>();
         }
     }
 }

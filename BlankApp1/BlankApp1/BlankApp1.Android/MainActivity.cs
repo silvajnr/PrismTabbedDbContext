@@ -1,6 +1,7 @@
 ﻿using Android.App;
 using Android.Content.PM;
 using Android.OS;
+using BlankApp1.Services;
 using Prism;
 using Prism.Ioc;
 
@@ -26,6 +27,7 @@ namespace BlankApp1.Droid
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             // Register any platform specific implementations
+            containerRegistry.Register<ISQLite, SQliteService>();
         }
     }
 }

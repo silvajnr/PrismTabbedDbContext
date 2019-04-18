@@ -46,8 +46,6 @@ namespace BlankApp1.DataStores
         public DbSet<Chat> Chats { get; set; }
         public DbSet<ChatDetail> ChatDetails { get; set; }
         public DbSet<Message> Messages { get; set; }
-        public DbSet<ChatDetail> Contacts { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public DbSet<Message> ContactDetails { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         #endregion
 

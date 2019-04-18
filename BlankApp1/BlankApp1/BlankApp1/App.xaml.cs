@@ -2,8 +2,11 @@
 using BlankApp1.Services;
 using BlankApp1.ViewModels;
 using BlankApp1.Views;
+using DryIoc;
 using Prism;
 using Prism.Ioc;
+using System;
+using System.Diagnostics;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -24,8 +27,18 @@ namespace BlankApp1
         protected override async void OnInitialized()
         {
             InitializeComponent();
+            try
+            {
+                var navigationResult = await NavigationService.NavigateAsync("NavigationPage/PrismTabbedPage1");
+                Debug.WriteLine($"OnInitialized : Navigate Async Success:{navigationResult.Success}");
+                if (!navigationResult.Success)
+                    Debug.WriteLine($"Exception: {navigationResult.Exception} Exception MessageModel: {navigationResult.Exception.Message} Exception Source: {navigationResult.Exception.Source}");
 
-            await NavigationService.NavigateAsync("NavigationPage/MainPage");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"OnInitialized _navigationService failled ex:{ex.Source} {ex.Message} {ex.InnerException}");
+            }
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -44,8 +57,8 @@ namespace BlankApp1
             //containerRegistry.RegisterInstance<IApplicationDbContext>(new ApplicationDbContext(_dbPath));
             //containerRegistry.RegisterSingleton<IApplicationDbContext, ApplicationDbContext>();
             //containerRegistry.Register<IApplicationDbContext, ApplicationDbContext>();
-            containerRegistry.Register<IGenerateDbContext, GenerateDbContext>();
-            //containerRegistry.RegisterInstance<IGenerateDbContext>(new GenerateDbContext(_dbPath));
+            //containerRegistry.Register<IGenerateDbContext, GenerateDbContext>();
+            containerRegistry.RegisterInstance<IGenerateDbContext>(new GenerateDbContext(_dbPath));
             //containerRegistry.RegisterSingleton<IGenerateDbContext, GenerateDbContext>();
             containerRegistry.Register<IMessageDataStore, MessageDataStore>();
             containerRegistry.Register<IChatDataStore, ChatDataStore>();
@@ -57,5 +70,13 @@ namespace BlankApp1
             containerRegistry.Register<IPrismContentPage3Services, PrismContentPage3Services>();
             #endregion
         }
+
+        //protected override void RegisterRequiredTypes(IContainerRegistry containerRegistry)
+        //{
+        //    base.RegisterRequiredTypes(containerRegistry);
+        //    var container = containerRegistry.GetContainer();
+        //    //container = container.With(rules => rules.WithUnknownServiceResolvers(req => req.ServiceType != typeof(ApplicationDbContext) ? null : new DelegateFactory(_ => new ApplicationDbContext(_dbPath))));
+        //    container.Register<IGenerateDbContext, GenerateDbContext>(setup: Setup.With(allowDisposableTransient: true));
+        //}
     }
 }

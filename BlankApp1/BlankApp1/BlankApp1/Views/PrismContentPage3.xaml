@@ -4,5 +4,32 @@
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Class="BlankApp1.Views.PrismContentPage3">
-  
+    <ContentPage.Content>
+        <ListView
+            x:Name="MainChatListView"
+            ItemsSource="{Binding Chats}"
+            HasUnevenRows="True"
+            ItemSelected="MyListView_OnItemSelected" 
+            ItemTapped="MyListView_OnItemTapped">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <ViewCell.View>
+                            <StackLayout 
+                                Padding="5"
+                                VerticalOptions="Center"
+                                Orientation="Horizontal">
+                                <Label Text="{Binding Id}" TextColor="Black" FontSize="Medium" HorizontalOptions="StartAndExpand"
+                                           Style="{DynamicResource TitleStyle}"/>
+                                <Label Text="{Binding ChatDetails.Title}" TextColor="Black" FontSize="Medium" HorizontalOptions="StartAndExpand"
+                                           Style="{DynamicResource TitleStyle}"/>
+                                <Label Text="{Binding SomeString}" FontSize="Small" HorizontalOptions="End" VerticalOptions="End" TextColor="Gray"
+                                           Style="{DynamicResource TitleStyle}"/>
+                            </StackLayout>
+                        </ViewCell.View>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </ContentPage.Content>
 </ContentPage>

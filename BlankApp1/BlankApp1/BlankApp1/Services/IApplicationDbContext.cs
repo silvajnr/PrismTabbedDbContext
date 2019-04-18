@@ -13,9 +13,9 @@ namespace BlankApp1.Services
 
         DbSet<Chat> Chats { get; set; }
 
-        DbSet<ChatDetail> Contacts { get; set; }
+        DbSet<ChatDetail> ChatDetails { get; set; }
 
-        DbSet<Message> ContactDetails { get; set; }
+        DbSet<Message> Messages { get; set; }
 
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
 

@@ -1,4 +1,6 @@
 ﻿using BlankApp1.Services;
+using DryIoc;
+using Prism.DryIoc;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,6 +16,7 @@ namespace BlankApp1.DataStores
         /// Database context for ClienteData
         /// </summary>
         private readonly IGenerateDbContext _dbContext;
+        private readonly IContainer _appContainer;
         private readonly string _instance = Guid.NewGuid().ToString();
         #endregion
 
@@ -21,6 +24,7 @@ namespace BlankApp1.DataStores
         public DataStore(IGenerateDbContext dbContext)
         {
             _dbContext = dbContext;
+            _appContainer = (App.Current as PrismApplication).Container.GetContainer();
             Debug.WriteLine($"DataStore check _dbContext:{_dbContext.Instace} instance {_instance}");
         }
         #endregion
@@ -32,8 +36,9 @@ namespace BlankApp1.DataStores
             return Task.Run(() =>
             {
                 IEnumerable<T> items = null;
-                using (IApplicationDbContext myDbContext = _dbContext.GenerateNewContext())
+                using (var scope = _appContainer.OpenScope())
                 {
+                    IApplicationDbContext myDbContext = scope.Resolve<IGenerateDbContext>().GenerateNewContext();
                     try
                     {
                         items = myDbContext.Set<T>().ToList<T>();
@@ -56,8 +61,9 @@ namespace BlankApp1.DataStores
             return Task.Run(() =>
             {
                 IEnumerable<T> items = null;
-                using (IApplicationDbContext myDbContext = _dbContext.GenerateNewContext())
+                using (var scope = _appContainer.OpenScope())
                 {
+                    IApplicationDbContext myDbContext = scope.Resolve<IGenerateDbContext>().GenerateNewContext();
                     try
                     {
                         items = myDbContext.Set<T>().Where(predicate);

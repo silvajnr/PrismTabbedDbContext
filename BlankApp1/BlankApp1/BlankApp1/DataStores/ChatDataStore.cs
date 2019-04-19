@@ -1,5 +1,7 @@
 ﻿using BlankApp1.Services;
+using DryIoc;
 using Microsoft.EntityFrameworkCore;
+using Prism.DryIoc;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,7 +17,7 @@ namespace BlankApp1.DataStores
         /// Database context for ChatDataStore
         /// </summary>
         private readonly IGenerateDbContext _dbContext;
-
+        private readonly IContainer _appContainer;
         private readonly string _instance = Guid.NewGuid().ToString();
         #endregion
 
@@ -24,6 +26,7 @@ namespace BlankApp1.DataStores
             : base(dbContext)
         {
             _dbContext = dbContext;
+            _appContainer = (App.Current as PrismApplication).Container.GetContainer();
             Debug.WriteLine($"ChatDataStore _dbContext:{_dbContext.Instace} check instance {_instance}");
         }
 
@@ -41,8 +44,9 @@ namespace BlankApp1.DataStores
             return Task.Run(() =>
             {
                 IEnumerable<Chat> items = default(IEnumerable<Chat>);
-                using (IApplicationDbContext myDbContext = _dbContext.GenerateNewContext())
+                using (var scope = _appContainer.OpenScope())
                 {
+                    IApplicationDbContext myDbContext = scope.Resolve<IGenerateDbContext>().GenerateNewContext();
                     try
                     {
                         items = myDbContext.Chats
